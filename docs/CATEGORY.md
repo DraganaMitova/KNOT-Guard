@@ -29,4 +29,4 @@ KNOT Guard governs whether a sensitive action is allowed to become reality.
 
 ## Core Sentence
 
-KNOT Guard prevents sensitive software actions from executing unless authority, scope, token consumption, and audit all agree.
+KNOT Guard makes sensitive software actions pass through authority, scope, token consumption, and audit before execution is allowed inside the configured runtime boundary.

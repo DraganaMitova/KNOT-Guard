@@ -2,7 +2,7 @@
 
 KNOT Guard is an **authority-governed execution runtime** for sensitive software actions.
 
-It acts like a state-transition firewall: a protected action may execute only when authority, scope, token consumption, and audit all agree.
+It acts like a state-transition firewall: inside the configured runtime boundary, a protected action may execute only when authority, scope, token consumption, and audit all agree.
 
 ```text
 request observed
@@ -25,7 +25,7 @@ execution is not proof
 logs are not audit
 ```
 
-KNOT Guard prevents backend code from confusing those states.
+KNOT Guard is designed to keep backend code from confusing those states.
 
 ## Quick Example
 
@@ -76,9 +76,9 @@ apps/authority-runtime-api
   Runnable backend proof with protected refund endpoint, receipts, and audit export.
 ```
 
-## Runtime Guarantees
+## Runtime Invariants
 
-KNOT Guard is designed to refuse common unsafe transitions:
+Within its configured stores and integration boundary, KNOT Guard is designed to refuse common unsafe transitions:
 
 - No authority -> no execution
 - Wrong scope -> no execution
@@ -110,7 +110,7 @@ Run the backend proof:
 npm run api
 ```
 
-## Security Proof Surface
+## Evidence Surface
 
 This branch includes:
 
@@ -128,6 +128,9 @@ This branch includes:
 
 KNOT Guard is pre-release security infrastructure. The current branch contains code, tests, docs, and demos, but it has not completed independent audit, formal verification, security certification, or large-scale production validation.
 
+KNOT Guard does not claim trust. It separates claims from evidence, and evidence from deployment assumptions.
+
+Read [Assurance boundaries](docs/ASSURANCE.md) for the exact claim language this repository allows.
 Read [Trust and evidence](docs/TRUST_EVIDENCE.md) before treating any security claim as production-grade.
 
 Read:
@@ -138,8 +141,10 @@ Read:
 - [Architecture](docs/ARCHITECTURE.md)
 - [AI agent tool safety](docs/AI_AGENT_TOOL_SAFETY.md)
 - [Security model](docs/SECURITY_MODEL.md)
+- [Assurance boundaries](docs/ASSURANCE.md)
 - [Security limits](docs/SECURITY_LIMITS.md)
 - [Trust and evidence](docs/TRUST_EVIDENCE.md)
+- [Proof register](docs/PROOF_REGISTER.md)
 - [Security review status](docs/SECURITY_REVIEW.md)
 - [Security inspection guide](docs/SECURITY_INSPECTION_GUIDE.md)
 - [Adversarial testing](docs/ADVERSARIAL_TESTING.md)
@@ -147,7 +152,7 @@ Read:
 - [Threat model v0.1](docs/THREAT_MODEL_V0_1.md)
 - [Cryptographic design](docs/CRYPTOGRAPHIC_DESIGN.md)
 - [Persistence architecture](docs/PERSISTENCE_ARCHITECTURE.md)
-- [Distributed guarantees](docs/DISTRIBUTED_GUARANTEES.md)
+- [Distributed assumptions](docs/DISTRIBUTED_ASSUMPTIONS.md)
 - [Operational security](docs/OPERATIONAL_SECURITY.md)
 - [Supply-chain posture](docs/SUPPLY_CHAIN.md)
 - [Benchmarks](docs/BENCHMARKS.md)

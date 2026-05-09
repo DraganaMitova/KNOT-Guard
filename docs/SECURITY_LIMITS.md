@@ -112,11 +112,11 @@ This gives the application one obvious execution path and makes bypasses easier 
 
 ## Honest Classification
 
-KNOT Guard is a promising authority-governed execution runtime with growing proof surfaces.
+KNOT Guard is an opinionated authority-governed execution runtime with a growing evidence surface.
 
 It is not yet:
 
-- independently audited
+- reviewed by an external security auditor
 - formally verified
 - enterprise-certified
 - battle-tested at large scale

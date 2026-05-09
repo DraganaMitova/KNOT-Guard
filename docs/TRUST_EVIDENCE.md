@@ -2,7 +2,7 @@
 
 KNOT Guard is pre-release security infrastructure. Its claims are not all equal.
 
-This document separates implemented evidence from claims that still need independent review.
+This document separates implemented evidence from claims that still need independent review. The companion [assurance boundaries](ASSURANCE.md) document defines which security language is allowed while the project is still pre-release.
 
 ## Evidence Levels
 
@@ -26,7 +26,7 @@ This document separates implemented evidence from claims that still need indepen
 | Rollback is prevented | requires external checkpoint authority | Not yet proven |
 | Privileged DB tampering is prevented | requires immutable storage or external checkpoints | Not yet proven |
 | Policy drift is blocked | policy-version binding test | Self-tested |
-| Bypass is prevented by default | `ProtectedActionRegistry` pattern exists | Architecture |
+| Bypass can be reduced by architecture | `ProtectedActionRegistry` pattern exists | Architecture |
 | Bypass is impossible | impossible if raw operations are exposed elsewhere | Not yet proven |
 | Install hooks are absent | package safety script and CI check | Self-tested |
 | Weak random fallback is avoided | default id generation requires `crypto.randomUUID()` | Implemented |
@@ -36,7 +36,7 @@ This document separates implemented evidence from claims that still need indepen
 
 ## Current Trust Statement
 
-KNOT Guard is a promising authority-governed execution runtime with growing proof surfaces. It is not yet independently audited, formally verified, enterprise-certified, or battle-tested at scale.
+KNOT Guard is an opinionated authority-governed execution runtime with a growing evidence surface. It is not yet independently audited, formally verified, enterprise-certified, or battle-tested at scale.
 
 ## What Would Upgrade Trust
 

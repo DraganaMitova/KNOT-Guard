@@ -2,7 +2,7 @@
 
 KNOT Guard does not yet have a production release.
 
-This is the required process before a tagged release is called production-ready.
+This is the required process before a tagged release is described as ready for production evaluation.
 
 ## Required Checks
 
@@ -12,6 +12,7 @@ npm run build
 npm test
 npm audit --audit-level=high
 npm run security:package
+npm run assurance:language
 npm run benchmark
 npm --workspace @knot/guard pack --dry-run
 ```

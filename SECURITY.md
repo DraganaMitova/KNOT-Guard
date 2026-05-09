@@ -20,10 +20,11 @@ Include:
 | --- | --- |
 | `main` prototype | No production support |
 | `security-readiness-hardening` | Security review branch |
+| `stable-prod` | Active pre-release hardening branch |
 
 ## Current Security Posture
 
-This project currently provides local SDK guarantees and documented production requirements. It has not yet completed independent audit, formal verification, or production adapter review.
+This project currently provides local SDK enforcement, documented assumptions, adversarial tests, package-surface checks, and production requirements. It has not yet completed independent audit, formal verification, production adapter review, signed releases, or large-scale operational validation.
 
 ## Advisory Process
 

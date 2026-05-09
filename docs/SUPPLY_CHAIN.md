@@ -1,6 +1,6 @@
 # Supply-Chain Posture
 
-KNOT Guard's current supply-chain strategy is conservative: keep the dependency tree small, lock installs, scan dependency changes, and avoid accidental open-source relicensing.
+KNOT Guard's current supply-chain strategy is conservative: keep the dependency tree small, lock installs, scan dependency changes, avoid install-time code execution, and make package contents inspectable.
 
 ## Current Practices
 
@@ -11,6 +11,7 @@ KNOT Guard's current supply-chain strategy is conservative: keep the dependency 
 - Dependency Review blocks high-severity dependency changes and disallowed copyleft licenses.
 - `npm audit --audit-level=high` runs in CI.
 - package safety checks reject install, prepare, and publish lifecycle hooks.
+- assurance-language checks reject unsupported absolute security claims.
 - release dry-run checks `npm pack --dry-run` for the SDK package.
 
 ## Dependency Policy

@@ -1,8 +1,8 @@
-# Distributed-System Guarantees
+# Distributed-System Assumptions
 
-KNOT Guard separates local guarantees from production distributed guarantees.
+KNOT Guard separates local enforced behavior from production distributed assumptions.
 
-## Local SDK Guarantees
+## Local SDK Behavior
 
 With the default in-memory runtime:
 
@@ -15,7 +15,7 @@ With the default in-memory runtime:
 
 ## Distributed Deployment Requirements
 
-To preserve the same guarantees across multiple processes, a deployment must provide:
+To preserve equivalent behavior across multiple processes, a deployment must provide:
 
 - a shared token-consumption store
 - atomic compare-and-insert for token consumption
@@ -36,4 +36,4 @@ To preserve the same guarantees across multiple processes, a deployment must pro
 
 ## Current Status
 
-The current branch documents these requirements, includes a local concurrent replay test, and includes a PostgreSQL adapter shape for shared atomic replay protection. Cross-process replay-race correctness depends on deploying that adapter, or an equivalent adapter, with a real shared database.
+The current branch documents these requirements, includes a local concurrent replay test, and includes a PostgreSQL adapter shape for shared atomic replay protection. Cross-process replay-race correctness is a deployment property: it depends on deploying that adapter, or an equivalent adapter, with a real shared database and validating it under concurrent load.

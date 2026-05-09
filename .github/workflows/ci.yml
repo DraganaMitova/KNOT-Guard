@@ -45,5 +45,8 @@ jobs:
       - name: Package safety
         run: npm run security:package
 
+      - name: Assurance language
+        run: npm run assurance:language
+
       - name: Benchmark smoke
         run: KNOT_BENCHMARK_ITERATIONS=1000 npm run benchmark

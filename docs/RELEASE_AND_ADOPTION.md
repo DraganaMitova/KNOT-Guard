@@ -4,7 +4,7 @@
 
 KNOT Guard is pre-release software.
 
-This repository currently proves:
+This repository currently provides evidence for:
 
 - the product architecture
 - the authority-governed execution API
@@ -15,6 +15,7 @@ This repository currently proves:
 - audit-chain verifier CLI
 - PostgreSQL audit/replay adapter shape
 - local benchmarkability
+- unsupported-claim detection in CI
 
 It does not yet claim:
 
@@ -24,6 +25,9 @@ It does not yet claim:
 - formal verification
 - production-certified database adapters
 - compliance certification
+- reproducible builds
+- signed release provenance
+- public production adopters
 
 ## Release Criteria
 
@@ -37,6 +41,9 @@ A first production candidate should include:
 - documented migration path
 - example Express middleware
 - signed release artifact checksums
+- SBOM
+- reproducible build instructions
+- advisory process validated through a real report or tabletop exercise
 
 ## Adoption Evidence To Collect
 

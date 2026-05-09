@@ -1,6 +1,6 @@
 # KNOT Guard Security Model
 
-KNOT Guard is an authority-governed execution runtime for sensitive backend actions. It is designed to prevent a common class of invalid software transitions:
+KNOT Guard is an authority-governed execution runtime for sensitive backend actions. It is designed to reject a common class of invalid software transitions inside its configured runtime boundary:
 
 ```text
 request observed -> authority granted -> scope changed -> execution still succeeds
@@ -70,9 +70,9 @@ KNOT Guard trusts the host application to provide:
 - a reliable `now()` source when token expiry matters
 - a durable `AuditStore` for production deployments
 
-## Current Guarantees
+## Current Enforced Behaviors
 
-With the default in-memory store, KNOT Guard guarantees these properties inside one process:
+With the default in-memory store, KNOT Guard enforces these behaviors inside one process:
 
 - an allow decision is required before execution
 - a token cannot be executed twice
@@ -80,8 +80,8 @@ With the default in-memory store, KNOT Guard guarantees these properties inside 
 - a token cannot be used for a changed actor, action, target, or scope
 - each audit record links to the previous record hash
 
-For multi-process or production systems, replay protection and audit appends must use a shared storage layer with atomic conditional writes. See [persistence architecture](./PERSISTENCE_ARCHITECTURE.md).
+For multi-process or production systems, replay protection and audit appends must use a shared storage layer with atomic conditional writes. See [persistence architecture](./PERSISTENCE_ARCHITECTURE.md) and [distributed assumptions](./DISTRIBUTED_ASSUMPTIONS.md).
 
 ## Maturity
 
-This repository is a product-readiness branch for the SDK. It contains a working runtime, tests, benchmark harness, and security architecture docs. It should still be treated as pre-release software until a production storage adapter, external audit verification tool, and release process are added.
+This repository is a product-readiness branch for the SDK. It contains a working runtime, tests, benchmark harness, and security architecture docs. It should still be treated as pre-release software until the production storage path, external checkpoint process, release signing, and independent review are complete.
