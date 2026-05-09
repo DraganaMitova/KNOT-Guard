@@ -17,23 +17,10 @@ AI proposes action
 An AI support agent wants to refund a payment:
 
 ```ts
-const decision = await knot.requestAuthority({
+const execution = await registry.run("refund_payment", {
   actor: { id: "agent-support-ai", roles: ["support_ai"] },
-  action: "refund_payment",
-  target: paymentId,
+  paymentId,
   reason: "Customer reported duplicate charge",
-  scope: {
-    tenantId: "bank-001",
-    resourceType: "payment",
-  },
-});
-
-if (decision.state !== "allow") {
-  return { status: decision.state, reason: decision.denialReason ?? decision.reviewReason };
-}
-
-const execution = await knot.executeWithReceipt(decision, async () => {
-  return await payments.refund(paymentId);
 });
 
 return {

@@ -53,7 +53,7 @@ Single-process replay protection:
 Distributed replay boundary:
 
 - `ReplayStore` interface in `packages/guard/src/types.ts`
-- PostgreSQL adapter shape in `packages/guard/src/postgres.ts`
+- PostgreSQL adapter in `packages/guard/src/postgres.ts`; real concurrency proof is retained on `integration-hardening-pass`
 
 The PostgreSQL shape uses atomic token insertion:
 

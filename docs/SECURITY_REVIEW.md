@@ -11,13 +11,13 @@ Available for review:
 - security limits
 - adversarial test suite
 - audit-chain verifier
-- PostgreSQL adapter shape
+- PostgreSQL adapter with real concurrency integration proof
 - CI and dependency scanning workflows
 
 ## Known Unreviewed Areas
 
 - cryptographic design depth
-- distributed replay behavior under real database contention
+- crash recovery around real database contention and external side effects
 - crash recovery around external side effects
 - rollback resistance with external checkpoints
 - developer bypass resistance in large applications

@@ -13,7 +13,7 @@ This register tracks the difference between what KNOT Guard can show today and w
 | Rollback detection with checkpoint | expected head hash and record count test | implemented and tested |
 | Audit failure before execution | audit-store failure test | implemented and tested |
 | No-bypass pattern | `ProtectedActionRegistry` test and docs | implemented as integration pattern |
-| PostgreSQL replay semantics | adapter shape and SQL assertion test | architecture-level evidence |
+| PostgreSQL replay semantics | real PostgreSQL 50-way concurrency proof retained on `integration-hardening-pass` | self-tested integration evidence |
 | Package install hooks | `scripts/check-package-safety.mjs` | CI enforced |
 | Unsupported security claims | `scripts/check-assurance-language.mjs` | CI enforced |
 
@@ -21,7 +21,6 @@ This register tracks the difference between what KNOT Guard can show today and w
 
 | Missing Proof | Why It Matters | Next Evidence |
 | --- | --- | --- |
-| Real PostgreSQL concurrency test | Adapter shape is not the same as database proof under contention. | integration test with multiple workers and one shared database |
 | Crash-recovery proof | Sensitive side effects can fail between token consumption, action execution, and completion audit. | crash harness with pending-token reconciliation |
 | External checkpoint example | Audit chains detect mutation but need a separate authority for rollback detection. | signed checkpoint file and verifier workflow |
 | Release signing | Users need to know which artifact came from which release commit. | signed tags, checksums, and npm provenance |

@@ -12,11 +12,11 @@ export interface PostgresQueryClient {
   query<T = unknown>(sql: string, values?: unknown[]): Promise<{ rows: T[]; rowCount?: number | null }>;
 }
 
-interface PostgresPooledClient extends PostgresQueryClient {
+export interface PostgresPooledClient extends PostgresQueryClient {
   release(): void;
 }
 
-interface PostgresPoolClient extends PostgresQueryClient {
+export interface PostgresPoolClient extends PostgresQueryClient {
   connect(): Promise<PostgresPooledClient>;
 }
 

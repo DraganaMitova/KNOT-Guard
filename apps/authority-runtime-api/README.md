@@ -1,6 +1,8 @@
 # KNOT Authority Runtime API
 
-Runnable backend proof for KNOT Guard.
+Runnable Express backend proof for KNOT Guard.
+
+The `/refund` route calls `registry.run("refund_payment", input)`. It does not build authority decisions or call the raw refund operation directly.
 
 Start it:
 
