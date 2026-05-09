@@ -4,7 +4,9 @@ KNOT Guard separates sensitive execution into explicit stages.
 
 ```mermaid
 flowchart LR
-  Caller["Caller or AI Tool"] --> Request["Authority Request"]
+  Raw["Raw Operation Exposed Directly"] -->|"bypass: outside governed boundary"| Unsafe["Ungoverned State Change"]
+  Caller["Caller or AI Tool"] --> Registry["Protected Action Registry"]
+  Registry --> Request["Authority Request"]
   Request --> Policy["Policy, Scope, Risk"]
   Policy --> Decision{"Decision"}
   Decision -->|"deny"| Denied["Denied Audit Record"]

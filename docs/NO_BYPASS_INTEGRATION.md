@@ -2,6 +2,8 @@
 
 KNOT Guard fails if developers expose dangerous operations directly.
 
+KNOT Guard protects governed transitions. It does not protect raw operations exposed outside the governed boundary.
+
 The KNOT integration pattern is:
 
 ```text

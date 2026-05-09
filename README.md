@@ -27,6 +27,30 @@ logs are not audit
 
 KNOT Guard is designed to keep backend code from confusing those states.
 
+## Governed Boundary
+
+KNOT Guard protects governed transitions.
+
+It does not protect raw operations exposed outside the governed boundary. Sensitive operations should be registered as protected actions and executed only through the governed runtime.
+
+```text
+raw operation [do not expose]
+        |
+protected action registry
+        |
+authority request
+        |
+scope/risk/policy check
+        |
+one-use token
+        |
+executeWithReceipt
+        |
+audit hash chain
+        |
+receipt/verifier
+```
+
 ## Quick Example
 
 ```ts
@@ -121,6 +145,7 @@ This branch includes:
 - benchmark harness for authority and execution flow
 - explicit versioned threat model and non-goals
 - documented persistence and distributed-system requirements
+- wrong-way/KNOT-way and Express integration guidance
 - CI, security scanning, dependency review, and operational-security posture docs
 
 ## Trust Status
@@ -138,6 +163,8 @@ Read:
 - [KNOT mindset](docs/KNOT_MINDSET.md)
 - [Runtime invariants](docs/INVARIANTS.md)
 - [Architecture](docs/ARCHITECTURE.md)
+- [Wrong way / KNOT way](docs/WRONG_WAY_KNOT_WAY.md)
+- [Express integration](docs/EXPRESS_INTEGRATION.md)
 - [AI agent tool safety](docs/AI_AGENT_TOOL_SAFETY.md)
 - [Security model](docs/SECURITY_MODEL.md)
 - [Assurance boundaries](docs/ASSURANCE.md)

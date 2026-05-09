@@ -14,6 +14,7 @@ This repository currently provides evidence for:
 - tamper-evident audit chaining
 - audit-chain verifier CLI
 - PostgreSQL audit/replay adapter shape
+- wrong-way/KNOT-way and Express integration guidance
 - local benchmarkability
 - unsupported-claim detection in CI
 
@@ -39,7 +40,7 @@ A first production candidate should include:
 - policy version binding
 - idempotency guidance for protected actions
 - documented migration path
-- example Express middleware
+- dedicated Express middleware package
 - signed release artifact checksums
 - SBOM
 - reproducible build instructions

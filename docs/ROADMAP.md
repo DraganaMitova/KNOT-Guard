@@ -21,6 +21,7 @@
 - authority runtime backend proof
 - category, invariant, architecture, and AI-agent safety docs
 - explicit security limits and no-bypass integration docs
+- wrong-way/KNOT-way and Express integration guidance
 - rollback/checkpoint verifier tests
 - open reciprocal license and commercial-license path
 - trust/evidence matrix and security review status
@@ -35,7 +36,7 @@
 - external audit-chain verifier hardening
 - production PostgreSQL package with integration tests
 - JSONL audit export
-- Express middleware
+- dedicated Express middleware package
 - signed audit checkpoints
 - pinned GitHub Action SHAs
 - SBOM generation
