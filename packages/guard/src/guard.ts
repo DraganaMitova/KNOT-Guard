@@ -10,6 +10,7 @@ import type {
   ExecutionToken,
   GuardConfig,
   Policy,
+  ReplayStore,
   StoredAuditRecord,
 } from "./types.js";
 import { KnotGuardError } from "./types.js";
@@ -19,17 +20,20 @@ const DEFAULT_TOKEN_TTL_MS = 60_000;
 export class KnotGuard {
   private readonly policies: Map<string, Policy>;
   private readonly tokenTtlMs: number;
+  private readonly policyVersion?: string;
   private readonly now: () => Date;
   private readonly idFactory: () => string;
-  private readonly replayProtection = new ReplayProtection();
+  private readonly replayStore: ReplayStore;
   private readonly auditStore: AuditStore;
   private readonly auditSink?: GuardConfig["auditSink"];
 
   constructor(config: GuardConfig) {
     this.policies = new Map(config.policies.map((policy) => [policy.action.name, policy]));
     this.tokenTtlMs = config.tokenTtlMs ?? DEFAULT_TOKEN_TTL_MS;
+    this.policyVersion = config.policyVersion;
     this.now = config.now ?? (() => new Date());
     this.idFactory = config.idFactory ?? randomId;
+    this.replayStore = config.replayStore ?? new ReplayProtection();
     this.auditStore = config.auditStore ?? new InMemoryAuditLog();
     this.auditSink = config.auditSink;
   }
@@ -71,11 +75,12 @@ export class KnotGuard {
     if (policy.action.requiresReview || policy.action.risk === "critical") {
       const decision: AuthorityDecision = {
         id: decisionId,
-        state: "hold",
-        request,
-        scope,
-        reviewReason: policy.action.requiresReview ? "manual_review_required" : "critical_risk",
-        createdAt,
+      state: "hold",
+      request,
+      scope,
+      policyVersion: this.policyVersion,
+      reviewReason: policy.action.requiresReview ? "manual_review_required" : "critical_risk",
+      createdAt,
       };
 
       await this.auditDecision(decision, "authority_held");
@@ -88,6 +93,7 @@ export class KnotGuard {
       state: "allow",
       request,
       scope,
+      policyVersion: this.policyVersion,
       token,
       createdAt,
     };
@@ -107,11 +113,6 @@ export class KnotGuard {
 
     const token = decision.token;
 
-    if (this.replayProtection.hasBeenConsumed(token)) {
-      await this.rejectExecution(decision, "token_consumed");
-      throw new KnotGuardError("Execution token has already been consumed.", "token_consumed");
-    }
-
     if (new Date(token.expiresAt).getTime() <= this.now().getTime()) {
       await this.rejectExecution(decision, "token_expired");
       throw new KnotGuardError("Execution token has expired.", "token_expired");
@@ -122,7 +123,12 @@ export class KnotGuard {
       throw new KnotGuardError("Execution token no longer matches the authority decision.", "token_scope_mismatch");
     }
 
-    this.replayProtection.consume(token, this.nowIso());
+    const consumption = await this.replayStore.consume(token, this.nowIso());
+
+    if (consumption.result === "rejected") {
+      await this.rejectExecution(decision, consumption.reason ?? "token_consumed");
+      throw new KnotGuardError("Execution token has already been consumed.", consumption.reason ?? "token_consumed");
+    }
 
     await this.audit({
       id: this.idFactory(),
@@ -132,7 +138,7 @@ export class KnotGuard {
       target: token.target,
       decisionId: decision.id,
       tokenId: token.id,
-      createdAt: this.nowIso(),
+      createdAt: consumption.consumedAt,
     });
 
     const result = await operation();
@@ -167,6 +173,7 @@ export class KnotGuard {
       state: "deny",
       request,
       scope,
+      policyVersion: this.policyVersion,
       denialReason,
       createdAt,
     };
@@ -190,6 +197,7 @@ export class KnotGuard {
       action: request.action,
       target: request.target,
       scope,
+      policyVersion: this.policyVersion,
       issuedAt: issuedAt.toISOString(),
       expiresAt: expiresAt.toISOString(),
     };
@@ -246,6 +254,7 @@ function tokenStillMatchesDecision(token: ExecutionToken, decision: AuthorityDec
     && token.actorId === decision.request.actor.id
     && token.action === decision.request.action
     && token.target === decision.request.target
+    && token.policyVersion === decision.policyVersion
     && JSON.stringify(token.scope) === JSON.stringify(decision.scope);
 }
 

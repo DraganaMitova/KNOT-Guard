@@ -13,15 +13,18 @@
 - runtime tests
 - benchmark harness
 - security model docs
+- threat model v0.1
+- policy version binding
+- PostgreSQL audit and replay adapter shape
+- audit-chain verifier CLI
 - CI, audit, CodeQL, and dependency-review workflows
 - security policy and PR security checklist
 - supply-chain and operational-security docs
 
 ## Next Release Candidate
 
-- policy version binding
-- external audit-chain verifier
-- PostgreSQL audit and replay adapter
+- external audit-chain verifier hardening
+- production PostgreSQL package with integration tests
 - JSONL audit export
 - Express middleware
 - signed audit checkpoints

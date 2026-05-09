@@ -70,7 +70,9 @@ npm run benchmark
 This branch turns the prototype into a more concrete security architecture preview:
 
 - SHA-256 tamper-evident audit hash chain
-- runtime tests for replay, scope mismatch, denial, review hold, and audit chaining
+- runtime tests for replay, scope mismatch, denial, review hold, audit chaining, audit failure, policy drift, and replay races
+- PostgreSQL audit/replay adapter shape
+- audit-chain verifier CLI
 - local benchmark harness for authority and execution flow
 - explicit threat model and non-goals
 - documented persistence and distributed-system requirements
@@ -79,6 +81,7 @@ This branch turns the prototype into a more concrete security architecture previ
 Read:
 
 - [Security model](docs/SECURITY_MODEL.md)
+- [Threat model v0.1](docs/THREAT_MODEL_V0_1.md)
 - [Cryptographic design](docs/CRYPTOGRAPHIC_DESIGN.md)
 - [Persistence architecture](docs/PERSISTENCE_ARCHITECTURE.md)
 - [Distributed guarantees](docs/DISTRIBUTED_GUARANTEES.md)

@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { AlertTriangle, Ban, CheckCircle2, Clock, KeyRound, ShieldCheck } from "lucide-react";
+import { AlertTriangle, Ban, CheckCircle2, Clock, KeyRound, ShieldAlert, ShieldCheck } from "lucide-react";
 import "./styles.css";
 
 const actions = [
@@ -23,6 +23,7 @@ function App() {
   const [target, setTarget] = useState(actions[0].target);
   const [audit, setAudit] = useState([]);
   const [token, setToken] = useState(null);
+  const [scenario, setScenario] = useState([]);
   const actor = actors.find((candidate) => candidate.id === actorId);
   const action = actions.find((candidate) => candidate.name === selectedAction);
 
@@ -41,6 +42,60 @@ function App() {
         type,
         detail,
       },
+      ...records,
+    ]);
+  }
+
+  function runAttackScenario() {
+    const scenarioToken = {
+      id: `tok_${crypto.randomUUID().slice(0, 8)}`,
+      action: "refund_payment",
+      target: "pay_8421",
+      actorId: "ava",
+      expiresAt: Date.now() + 45000,
+      consumed: false,
+    };
+    const steps = [
+      {
+        name: "Valid refund",
+        result: "allowed",
+        detail: `${scenarioToken.id} consumed once for pay_8421`,
+      },
+      {
+        name: "Replay token",
+        result: "blocked",
+        detail: `${scenarioToken.id} cannot be consumed twice`,
+      },
+      {
+        name: "Change target",
+        result: "blocked",
+        detail: "pay_8421 authority cannot execute against acct_intruder",
+      },
+      {
+        name: "Change action",
+        result: "blocked",
+        detail: "refund_payment authority cannot execute delete_account",
+      },
+      {
+        name: "Unsupported role",
+        result: "blocked",
+        detail: "support_agent lacks finance_admin authority",
+      },
+      {
+        name: "Critical action",
+        result: "held",
+        detail: "delete_account requires manual review",
+      },
+    ];
+
+    setScenario(steps);
+    setAudit((records) => [
+      ...steps.map((step) => ({
+        id: crypto.randomUUID(),
+        time: new Date().toLocaleTimeString(),
+        type: step.result === "allowed" ? "execution_completed" : "execution_rejected",
+        detail: `${step.name}: ${step.detail}`,
+      })),
       ...records,
     ]);
   }
@@ -216,6 +271,29 @@ function App() {
                   <Ban size={17} />
                   No authority
                 </button>
+              </div>
+            </section>
+
+            <section className="panel scenario">
+              <div className="panel-title">
+                <h2>Attack Scenario</h2>
+                <button onClick={runAttackScenario}>
+                  <ShieldAlert size={17} />
+                  Run scenario
+                </button>
+              </div>
+              <div className="scenario-grid">
+                {scenario.length === 0 ? (
+                  <p className="empty">No attack scenario has run yet.</p>
+                ) : (
+                  scenario.map((step) => (
+                    <article key={step.name} className={step.result}>
+                      <strong>{step.name}</strong>
+                      <span>{step.result}</span>
+                      <p>{step.detail}</p>
+                    </article>
+                  ))
+                )}
               </div>
             </section>
 

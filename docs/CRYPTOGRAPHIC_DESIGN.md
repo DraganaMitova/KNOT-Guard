@@ -51,6 +51,16 @@ Production deployments should add:
 - key rotation and key custody procedures
 - periodic audit-chain verification jobs
 
+## Audit Verification CLI
+
+KNOT Guard includes a local verifier for JSON or JSONL audit exports:
+
+```bash
+knot-guard verify-audit audit.jsonl
+```
+
+The verifier checks sequence order, previous-hash links, and each record hash.
+
 ## Token Design
 
 Execution tokens are opaque runtime objects bound to:

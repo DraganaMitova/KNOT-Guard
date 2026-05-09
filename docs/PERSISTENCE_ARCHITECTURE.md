@@ -39,9 +39,9 @@ execution_completed | execution_rejected
 
 For production, `token_consumed` and the protected action should be wrapped in the narrowest transaction the application can support. If the protected action cannot be transactional, the audit record should include an external operation id so reconciliation can detect partial completion.
 
-## Recommended Adapter Interface
+## Recommended Adapter Interfaces
 
-The SDK exposes an `AuditStore` interface:
+The SDK exposes `AuditStore` and `ReplayStore` interfaces:
 
 ```ts
 interface AuditStore {
@@ -50,11 +50,34 @@ interface AuditStore {
   byDecision(decisionId: string): Promise<StoredAuditRecord[]>;
   byToken(tokenId: string): Promise<StoredAuditRecord[]>;
 }
+
+interface ReplayStore {
+  consume(token: ExecutionToken, consumedAt: string): Promise<TokenConsumption>;
+  getConsumption(tokenId: string): Promise<TokenConsumption | undefined>;
+}
 ```
 
-The next production adapters should target:
+The current SDK includes a `PostgresGuardStore` adapter shape that implements both interfaces. It uses `insert ... on conflict (token_id) do nothing` for atomic token consumption and an advisory transaction lock for ordered audit-chain appends.
 
-- PostgreSQL
+Use its schema helper as a starting point:
+
+```ts
+PostgresGuardStore.schema();
+```
+
+Then wire a checked-out PostgreSQL client:
+
+```ts
+const store = new PostgresGuardStore({ client });
+const knot = new KnotGuard({
+  policies,
+  auditStore: store,
+  replayStore: store,
+});
+```
+
+Future production adapters should also target:
+
 - SQLite for embedded systems
 - append-only JSONL for local agent runtimes
 - cloud object storage for immutable audit exports

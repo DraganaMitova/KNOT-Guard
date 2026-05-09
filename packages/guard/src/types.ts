@@ -45,6 +45,7 @@ export interface AuthorityDecision {
   state: DecisionState;
   request: AuthorityRequest;
   scope: Scope;
+  policyVersion?: string;
   denialReason?: DenialReason;
   reviewReason?: string;
   token?: ExecutionToken;
@@ -58,6 +59,7 @@ export interface ExecutionToken {
   action: string;
   target: string;
   scope: Scope;
+  policyVersion?: string;
   issuedAt: string;
   expiresAt: string;
 }
@@ -67,6 +69,11 @@ export interface TokenConsumption {
   consumedAt: string;
   result: "executed" | "rejected";
   reason?: DenialReason;
+}
+
+export interface ReplayStore {
+  consume(token: ExecutionToken, consumedAt: string): Promise<TokenConsumption>;
+  getConsumption(tokenId: string): Promise<TokenConsumption | undefined>;
 }
 
 export interface AuditRecord {
@@ -109,10 +116,12 @@ export interface Policy {
 
 export interface GuardConfig {
   policies: Policy[];
+  policyVersion?: string;
   tokenTtlMs?: number;
   now?: () => Date;
   idFactory?: () => string;
   auditStore?: AuditStore;
+  replayStore?: ReplayStore;
   auditSink?: (record: StoredAuditRecord) => Promise<void> | void;
 }
 

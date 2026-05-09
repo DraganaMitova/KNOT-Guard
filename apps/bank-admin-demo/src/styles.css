@@ -156,7 +156,7 @@ button {
 
 .panels {
   display: grid;
-  grid-template-columns: minmax(360px, 0.9fr) minmax(420px, 1.1fr);
+  grid-template-columns: minmax(320px, 0.8fr) minmax(320px, 0.9fr) minmax(420px, 1.1fr);
   gap: 22px;
 }
 
@@ -170,6 +170,23 @@ button {
 .panel h2 {
   font-size: 18px;
   margin-bottom: 16px;
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.panel-title h2 {
+  margin-bottom: 0;
+}
+
+.panel-title button {
+  min-height: 36px;
+  padding: 0 12px;
 }
 
 .pipeline {
@@ -202,6 +219,47 @@ button {
 
 .audit {
   min-height: 520px;
+}
+
+.scenario-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.scenario-grid article {
+  border: 1px solid #d8e0e7;
+  border-left: 5px solid #687782;
+  border-radius: 6px;
+  padding: 12px;
+  background: #fbfcfd;
+}
+
+.scenario-grid article.allowed {
+  border-left-color: #3ea46d;
+}
+
+.scenario-grid article.blocked {
+  border-left-color: #d96c5f;
+}
+
+.scenario-grid article.held {
+  border-left-color: #d6a23f;
+}
+
+.scenario-grid strong,
+.scenario-grid span {
+  display: block;
+}
+
+.scenario-grid span {
+  color: #687782;
+  text-transform: uppercase;
+  font-size: 12px;
+  margin-top: 3px;
+}
+
+.scenario-grid p {
+  margin-top: 6px;
 }
 
 .records {

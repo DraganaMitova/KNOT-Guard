@@ -12,6 +12,8 @@ This repository currently proves:
 - scope-bound token execution
 - concurrent in-process replay-race rejection
 - tamper-evident audit chaining
+- audit-chain verifier CLI
+- PostgreSQL audit/replay adapter shape
 - local benchmarkability
 
 It does not yet claim:
@@ -20,7 +22,7 @@ It does not yet claim:
 - independent audit
 - enterprise support
 - formal verification
-- production database adapters
+- production-certified database adapters
 - compliance certification
 
 ## Release Criteria

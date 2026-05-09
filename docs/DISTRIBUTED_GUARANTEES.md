@@ -36,4 +36,4 @@ To preserve the same guarantees across multiple processes, a deployment must pro
 
 ## Current Status
 
-The current branch documents these requirements and includes a local concurrent replay test. It does not yet ship a PostgreSQL/Redis adapter, so cross-process replay-race correctness remains a production-adapter requirement.
+The current branch documents these requirements, includes a local concurrent replay test, and includes a PostgreSQL adapter shape for shared atomic replay protection. Cross-process replay-race correctness depends on deploying that adapter, or an equivalent adapter, with a real shared database.

@@ -1,8 +1,10 @@
 export { InMemoryAuditLog } from "./audit.js";
 export { canonicalJson, sha256Hex } from "./crypto.js";
 export { KnotGuard } from "./guard.js";
+export { PostgresGuardStore } from "./postgres.js";
 export { ReplayProtection } from "./replay.js";
 export { bindScope, scopeMatches } from "./scope.js";
+export { verifyAuditChain } from "./verify.js";
 export { KnotGuardError } from "./types.js";
 export type {
   Action,
@@ -16,7 +18,10 @@ export type {
   ExecutionToken,
   GuardConfig,
   Policy,
+  ReplayStore,
   Scope,
   StoredAuditRecord,
   TokenConsumption,
 } from "./types.js";
+export type { PostgresGuardStoreConfig, PostgresQueryClient } from "./postgres.js";
+export type { AuditVerificationFailure, AuditVerificationResult } from "./verify.js";

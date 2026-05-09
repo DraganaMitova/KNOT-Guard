@@ -1,17 +1,22 @@
-import type { ExecutionToken, TokenConsumption } from "./types.js";
+import type { ExecutionToken, ReplayStore, TokenConsumption } from "./types.js";
 
-export class ReplayProtection {
+export class ReplayProtection implements ReplayStore {
   private readonly consumed = new Map<string, TokenConsumption>();
 
   hasBeenConsumed(token: ExecutionToken): boolean {
     return this.consumed.has(token.id);
   }
 
-  consume(token: ExecutionToken, consumedAt: string): TokenConsumption {
+  async consume(token: ExecutionToken, consumedAt: string): Promise<TokenConsumption> {
     const existing = this.consumed.get(token.id);
 
     if (existing) {
-      return existing;
+      return {
+        tokenId: token.id,
+        consumedAt,
+        result: "rejected",
+        reason: "token_consumed",
+      };
     }
 
     const consumption: TokenConsumption = {
@@ -24,7 +29,7 @@ export class ReplayProtection {
     return consumption;
   }
 
-  getConsumption(tokenId: string): TokenConsumption | undefined {
+  async getConsumption(tokenId: string): Promise<TokenConsumption | undefined> {
     return this.consumed.get(tokenId);
   }
 }
