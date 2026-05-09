@@ -1,21 +1,36 @@
-import type { AuditRecord } from "./types.js";
+import { sha256Hex } from "./crypto.js";
+import type { AuditRecord, AuditStore, StoredAuditRecord } from "./types.js";
 
-export class InMemoryAuditLog {
-  private readonly records: AuditRecord[] = [];
+export class InMemoryAuditLog implements AuditStore {
+  private readonly records: StoredAuditRecord[] = [];
 
-  async write(record: AuditRecord): Promise<void> {
-    this.records.push(record);
+  async append(record: AuditRecord): Promise<StoredAuditRecord> {
+    const previous = this.records.at(-1);
+    const stored: StoredAuditRecord = {
+      ...record,
+      sequence: this.records.length + 1,
+      previousHash: previous?.hash ?? null,
+      hash: "",
+    };
+
+    stored.hash = await sha256Hex({
+      ...stored,
+      hash: undefined,
+    });
+
+    this.records.push(stored);
+    return stored;
   }
 
-  all(): AuditRecord[] {
+  async all(): Promise<StoredAuditRecord[]> {
     return [...this.records];
   }
 
-  byDecision(decisionId: string): AuditRecord[] {
+  async byDecision(decisionId: string): Promise<StoredAuditRecord[]> {
     return this.records.filter((record) => record.decisionId === decisionId);
   }
 
-  byToken(tokenId: string): AuditRecord[] {
+  async byToken(tokenId: string): Promise<StoredAuditRecord[]> {
     return this.records.filter((record) => record.tokenId === tokenId);
   }
 }

@@ -3,12 +3,14 @@ import { ReplayProtection } from "./replay.js";
 import { bindScope, scopeMatches } from "./scope.js";
 import type {
   AuditRecord,
+  AuditStore,
   AuthorityDecision,
   AuthorityRequest,
   DenialReason,
   ExecutionToken,
   GuardConfig,
   Policy,
+  StoredAuditRecord,
 } from "./types.js";
 import { KnotGuardError } from "./types.js";
 
@@ -20,7 +22,7 @@ export class KnotGuard {
   private readonly now: () => Date;
   private readonly idFactory: () => string;
   private readonly replayProtection = new ReplayProtection();
-  private readonly inMemoryAudit = new InMemoryAuditLog();
+  private readonly auditStore: AuditStore;
   private readonly auditSink?: GuardConfig["auditSink"];
 
   constructor(config: GuardConfig) {
@@ -28,6 +30,7 @@ export class KnotGuard {
     this.tokenTtlMs = config.tokenTtlMs ?? DEFAULT_TOKEN_TTL_MS;
     this.now = config.now ?? (() => new Date());
     this.idFactory = config.idFactory ?? randomId;
+    this.auditStore = config.auditStore ?? new InMemoryAuditLog();
     this.auditSink = config.auditSink;
   }
 
@@ -148,8 +151,8 @@ export class KnotGuard {
     return result;
   }
 
-  auditRecords(): AuditRecord[] {
-    return this.inMemoryAudit.all();
+  async auditRecords(): Promise<StoredAuditRecord[]> {
+    return this.auditStore.all();
   }
 
   private async deny(
@@ -225,8 +228,8 @@ export class KnotGuard {
   }
 
   private async audit(record: AuditRecord): Promise<void> {
-    await this.inMemoryAudit.write(record);
-    await this.auditSink?.(record);
+    const stored = await this.auditStore.append(record);
+    await this.auditSink?.(stored);
   }
 
   private nowIso(): string {

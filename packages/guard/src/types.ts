@@ -89,6 +89,19 @@ export interface AuditRecord {
   data?: Record<string, unknown>;
 }
 
+export interface StoredAuditRecord extends AuditRecord {
+  sequence: number;
+  previousHash: string | null;
+  hash: string;
+}
+
+export interface AuditStore {
+  append(record: AuditRecord): Promise<StoredAuditRecord>;
+  all(): Promise<StoredAuditRecord[]>;
+  byDecision(decisionId: string): Promise<StoredAuditRecord[]>;
+  byToken(tokenId: string): Promise<StoredAuditRecord[]>;
+}
+
 export interface Policy {
   action: Action;
   allowedScopes?: Scope[];
@@ -99,7 +112,8 @@ export interface GuardConfig {
   tokenTtlMs?: number;
   now?: () => Date;
   idFactory?: () => string;
-  auditSink?: (record: AuditRecord) => Promise<void> | void;
+  auditStore?: AuditStore;
+  auditSink?: (record: StoredAuditRecord) => Promise<void> | void;
 }
 
 export class KnotGuardError extends Error {

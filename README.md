@@ -62,7 +62,32 @@ Then open the local URL printed by Vite.
 npm install
 npm run build
 npm test
+npm run benchmark
 ```
+
+## Security Readiness
+
+This branch turns the prototype into a more concrete security architecture preview:
+
+- SHA-256 tamper-evident audit hash chain
+- runtime tests for replay, scope mismatch, denial, review hold, and audit chaining
+- local benchmark harness for authority and execution flow
+- explicit threat model and non-goals
+- documented persistence and distributed-system requirements
+- CI, security scanning, dependency review, and operational-security posture docs
+
+Read:
+
+- [Security model](docs/SECURITY_MODEL.md)
+- [Cryptographic design](docs/CRYPTOGRAPHIC_DESIGN.md)
+- [Persistence architecture](docs/PERSISTENCE_ARCHITECTURE.md)
+- [Distributed guarantees](docs/DISTRIBUTED_GUARANTEES.md)
+- [Operational security](docs/OPERATIONAL_SECURITY.md)
+- [Supply-chain posture](docs/SUPPLY_CHAIN.md)
+- [Benchmarks](docs/BENCHMARKS.md)
+- [Release and adoption status](docs/RELEASE_AND_ADOPTION.md)
+- [Roadmap](docs/ROADMAP.md)
+- [Changelog](CHANGELOG.md)
 
 ## Product Positioning
 

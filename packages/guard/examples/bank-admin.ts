@@ -37,4 +37,4 @@ if (decision.state === "allow") {
   });
 }
 
-console.log(knot.auditRecords());
+console.log(await knot.auditRecords());
