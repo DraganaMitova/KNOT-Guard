@@ -38,8 +38,7 @@ const decision = await knot.requestAuthority({
 });
 
 const execution = await knot.executeWithReceipt(decision, async () => {
-  await users.delete(userId);
-  return { deleted: true };
+  return users.delete(userId);
 });
 
 console.log(execution.receipt.executionAuditHash);
