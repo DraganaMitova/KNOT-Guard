@@ -20,6 +20,8 @@
 - transition receipts
 - authority runtime backend proof
 - category, invariant, architecture, and AI-agent safety docs
+- explicit security limits and no-bypass integration docs
+- rollback/checkpoint verifier tests
 - CI, audit, CodeQL, and dependency-review workflows
 - security policy and PR security checklist
 - supply-chain and operational-security docs

@@ -127,10 +127,14 @@ This branch includes:
 Read:
 
 - [Category](docs/CATEGORY.md)
+- [KNOT mindset](docs/KNOT_MINDSET.md)
 - [Runtime invariants](docs/INVARIANTS.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [AI agent tool safety](docs/AI_AGENT_TOOL_SAFETY.md)
 - [Security model](docs/SECURITY_MODEL.md)
+- [Security limits](docs/SECURITY_LIMITS.md)
+- [Adversarial testing](docs/ADVERSARIAL_TESTING.md)
+- [No-bypass integration](docs/NO_BYPASS_INTEGRATION.md)
 - [Threat model v0.1](docs/THREAT_MODEL_V0_1.md)
 - [Cryptographic design](docs/CRYPTOGRAPHIC_DESIGN.md)
 - [Persistence architecture](docs/PERSISTENCE_ARCHITECTURE.md)

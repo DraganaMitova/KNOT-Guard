@@ -12,6 +12,8 @@ Security-readiness branch:
 - Added transition receipts via `executeWithReceipt`.
 - Added category, invariant, architecture, and AI agent tool-safety docs.
 - Added runnable authority runtime backend proof.
+- Added explicit security limits, adversarial testing, no-bypass integration, and KNOT mindset docs.
+- Added rollback/checkpoint and protected-action-registry tests.
 - Added local benchmark harness for governed authority/execution flow.
 - Added threat model, cryptographic design, persistence architecture, distributed guarantees, benchmark, and roadmap docs.
 - Added CI, security scanning, dependency review, repository security policy, and operational-security docs.

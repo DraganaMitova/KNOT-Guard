@@ -1,6 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { KnotGuard, KnotGuardError, PostgresGuardStore, verifyAuditChain } from "../dist/index.js";
+import {
+  KnotGuard,
+  KnotGuardError,
+  PostgresGuardStore,
+  ProtectedActionRegistry,
+  verifyAuditChain,
+} from "../dist/index.js";
 
 const basePolicy = {
   action: {
@@ -250,6 +256,71 @@ test("verifies valid audit chains and rejects tampered chains", async () => {
 
   assert.equal(invalid.valid, false);
   assert.equal(invalid.failures.some((failure) => failure.reason === "hash_mismatch"), true);
+});
+
+test("detects rollback or privileged deletion when checked against a known checkpoint", async () => {
+  const knot = createGuard();
+  const firstDecision = await knot.requestAuthority(request({ target: "pay_001" }));
+  await knot.execute(firstDecision, () => "first");
+  const secondDecision = await knot.requestAuthority(request({ target: "pay_002" }));
+  await knot.execute(secondDecision, () => "second");
+
+  const records = await knot.auditRecords();
+  const checkpoint = await verifyAuditChain(records);
+  const rolledBack = records.slice(0, 4);
+  const verifiedRollback = await verifyAuditChain(rolledBack, {
+    expectedHeadHash: checkpoint.headHash,
+    expectedRecordCount: records.length,
+  });
+
+  assert.equal(checkpoint.valid, true);
+  assert.equal(verifiedRollback.valid, false);
+  assert.equal(
+    verifiedRollback.failures.some((failure) => failure.reason === "checkpoint_mismatch"),
+    true,
+  );
+});
+
+test("runs dangerous operations through a protected action registry", async () => {
+  const knot = createGuard();
+  const registry = new ProtectedActionRegistry(knot);
+  const rawRefunds = [];
+
+  registry.register({
+    action: "refund_payment",
+    buildRequest(input) {
+      return request({
+        actor: input.actor,
+        target: input.paymentId,
+        reason: input.reason,
+        scope: { tenantId: "bank-001", resourceType: "payment" },
+      });
+    },
+    execute(input) {
+      rawRefunds.push(input.paymentId);
+      return { refundId: `refund_${rawRefunds.length}` };
+    },
+  });
+
+  const allowed = await registry.run("refund_payment", {
+    actor: { id: "ava", roles: ["finance_admin"] },
+    paymentId: "pay_001",
+    reason: "Duplicate charge",
+  });
+
+  assert.deepEqual(allowed.result, { refundId: "refund_1" });
+  assert.equal(allowed.receipt.action, "refund_payment");
+  assert.equal(rawRefunds.length, 1);
+
+  await assert.rejects(
+    () => registry.run("refund_payment", {
+      actor: { id: "leo", roles: ["support_agent"] },
+      paymentId: "pay_002",
+      reason: "Trying to bypass authority",
+    }),
+    (error) => error instanceof KnotGuardError && error.reason === "actor_not_allowed",
+  );
+  assert.equal(rawRefunds.length, 1);
 });
 
 test("PostgresGuardStore rejects replay through atomic token insert semantics", async () => {

@@ -29,6 +29,7 @@ The audit chain proves that:
 - a record has not changed since its hash was produced
 - record order has not changed without detection
 - inserted or removed records break downstream hash links
+- rollback is detectable when the verifier checks an expected head hash and record count
 
 ## What This Does Not Prove Yet
 
@@ -40,6 +41,8 @@ The current SDK does not yet provide:
 - remote notarization
 - hardware-backed keys
 - cryptographic proof that the host application could not suppress writes before they happen
+- rollback resistance without an external checkpoint
+- protection from privileged storage deletion
 
 ## Production Hardening Path
 
@@ -56,7 +59,7 @@ Production deployments should add:
 KNOT Guard includes a local verifier for JSON or JSONL audit exports:
 
 ```bash
-knot-guard verify-audit audit.jsonl
+knot-guard verify-audit audit.jsonl --head <known-head-hash> --count <known-record-count>
 ```
 
 The verifier checks sequence order, previous-hash links, and each record hash.

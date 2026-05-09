@@ -4,9 +4,19 @@ import type { StoredAuditRecord } from "./types.js";
 export interface AuditVerificationFailure {
   index: number;
   sequence?: number;
-  reason: "empty_chain" | "sequence_gap" | "previous_hash_mismatch" | "hash_mismatch";
+  reason:
+    | "empty_chain"
+    | "sequence_gap"
+    | "previous_hash_mismatch"
+    | "hash_mismatch"
+    | "checkpoint_mismatch";
   expected?: string | number | null;
   actual?: string | number | null;
+}
+
+export interface AuditVerificationOptions {
+  expectedHeadHash?: string;
+  expectedRecordCount?: number;
 }
 
 export interface AuditVerificationResult {
@@ -16,7 +26,10 @@ export interface AuditVerificationResult {
   failures: AuditVerificationFailure[];
 }
 
-export async function verifyAuditChain(records: StoredAuditRecord[]): Promise<AuditVerificationResult> {
+export async function verifyAuditChain(
+  records: StoredAuditRecord[],
+  options: AuditVerificationOptions = {},
+): Promise<AuditVerificationResult> {
   if (records.length === 0) {
     return {
       valid: false,
@@ -66,10 +79,32 @@ export async function verifyAuditChain(records: StoredAuditRecord[]): Promise<Au
     previousHash = record.hash;
   }
 
+  const headHash = records.at(-1)?.hash;
+
+  if (options.expectedHeadHash && headHash !== options.expectedHeadHash) {
+    failures.push({
+      index: records.length - 1,
+      sequence: records.at(-1)?.sequence,
+      reason: "checkpoint_mismatch",
+      expected: options.expectedHeadHash,
+      actual: headHash,
+    });
+  }
+
+  if (options.expectedRecordCount !== undefined && records.length !== options.expectedRecordCount) {
+    failures.push({
+      index: records.length - 1,
+      sequence: records.at(-1)?.sequence,
+      reason: "checkpoint_mismatch",
+      expected: options.expectedRecordCount,
+      actual: records.length,
+    });
+  }
+
   return {
     valid: failures.length === 0,
     recordsChecked: records.length,
-    headHash: records.at(-1)?.hash,
+    headHash,
     failures,
   };
 }

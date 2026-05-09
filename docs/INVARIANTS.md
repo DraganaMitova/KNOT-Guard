@@ -23,6 +23,17 @@ A protected action may execute only if all of these conditions hold:
 8. execution completion is appended to the audit chain
 9. a transition receipt can identify the decision, token, target, and audit hashes
 
+## Boundary Invariants
+
+KNOT Guard does not pretend one proof covers every threat.
+
+- Audit hash chains prove record continuity, not storage honesty.
+- Checkpoints prove the observed chain has not rolled back from a known head.
+- Replay stores prove token uniqueness only within their atomic consistency boundary.
+- Registries prove protected call paths only when raw operations are not exported.
+
+Each proof has a boundary. Each boundary must be named.
+
 ## Transition Receipt
 
 `executeWithReceipt` returns a receipt for every successful protected transition:
