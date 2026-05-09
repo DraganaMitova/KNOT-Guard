@@ -1,0 +1,19 @@
+{
+  "name": "knot-guard-workspace",
+  "private": true,
+  "version": "0.1.0",
+  "description": "KNOT Guard: authority-governed execution for sensitive software actions.",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "demo": "npm --workspace @knot/bank-admin-demo run dev"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
