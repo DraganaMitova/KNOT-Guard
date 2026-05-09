@@ -54,19 +54,39 @@ receipt/verifier
 ## Quick Example
 
 ```ts
-const decision = await knot.requestAuthority({
-  actor: currentUser,
+const registry = new ProtectedActionRegistry(knot);
+
+registry.register({
   action: "delete_user",
-  target: userId,
-  reason: "GDPR removal request",
+  buildRequest(input) {
+    return {
+      actor: input.actor,
+      action: "delete_user",
+      target: input.userId,
+      reason: input.reason,
+      scope: {
+        tenantId: input.tenantId,
+        resourceType: "user",
+        targetId: input.userId,
+      },
+    };
+  },
+  execute(input) {
+    return deleteUserRaw(input.userId);
+  },
 });
 
-const execution = await knot.executeWithReceipt(decision, async () => {
-  return users.delete(userId);
+const execution = await registry.run("delete_user", {
+  actor: currentUser,
+  tenantId: "tenant_001",
+  userId,
+  reason: "GDPR removal request",
 });
 
 console.log(execution.receipt.executionAuditHash);
 ```
+
+`ProtectedActionRegistry.run(...)` is the recommended public integration path. The lower-level `requestAuthority(...)` and `executeWithReceipt(...)` APIs are available for advanced SDK integrations, but routes, jobs, and agent tools should call protected action names rather than raw mutation functions.
 
 KNOT Guard makes sensitive backend actions:
 
@@ -96,7 +116,7 @@ apps/bank-admin-demo
   Browser demo showing protected banking admin actions and blocked attacks.
 
 apps/authority-runtime-api
-  Runnable backend proof with protected refund endpoint, receipts, and audit export.
+  Runnable Express backend proof with protected refund endpoint, receipts, and audit export.
 ```
 
 ## Runtime Invariants
@@ -139,9 +159,10 @@ This branch includes:
 
 - SHA-256 tamper-evident audit hash chain
 - transition receipts from `executeWithReceipt`
-- PostgreSQL audit/replay adapter shape
+- PostgreSQL audit/replay adapter with real concurrency integration proof
 - audit-chain verifier CLI
 - adversarial tests for replay, scope mismatch, denial, review hold, audit failure, policy drift, tampering, and replay races
+- Express protected-route proof using `ProtectedActionRegistry`
 - benchmark harness for authority and execution flow
 - explicit versioned threat model and non-goals
 - documented persistence and distributed-system requirements
@@ -156,6 +177,7 @@ KNOT Guard does not claim trust. It separates claims from evidence, and evidence
 
 Read [Assurance boundaries](docs/ASSURANCE.md) for the exact claim language this repository allows.
 Read [Trust and evidence](docs/TRUST_EVIDENCE.md) before treating any security claim as production-grade.
+Read [Certification readiness](docs/CERTIFICATION_READINESS.md) before using production-certification language.
 
 Read:
 
@@ -170,6 +192,7 @@ Read:
 - [Assurance boundaries](docs/ASSURANCE.md)
 - [Security limits](docs/SECURITY_LIMITS.md)
 - [Trust and evidence](docs/TRUST_EVIDENCE.md)
+- [Certification readiness](docs/CERTIFICATION_READINESS.md)
 - [Proof register](docs/PROOF_REGISTER.md)
 - [Security review status](docs/SECURITY_REVIEW.md)
 - [Security inspection guide](docs/SECURITY_INSPECTION_GUIDE.md)
@@ -192,6 +215,8 @@ Read:
 KNOT Guard is not "unhackable software."
 
 It is a runtime that makes dangerous backend actions pass through proof, authority, scope, execution, and audit before state changes are allowed.
+
+This branch is structured as a production-certification candidate: security claims are mapped to evidence, tests, threat assumptions, and known limits. It is not production-certified.
 
 ## License
 

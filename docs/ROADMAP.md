@@ -15,13 +15,14 @@
 - security model docs
 - threat model v0.1
 - policy version binding
-- PostgreSQL audit and replay adapter shape
+- PostgreSQL audit/replay adapter with real concurrency integration proof
 - audit-chain verifier CLI
 - transition receipts
-- authority runtime backend proof
+- Express authority runtime backend proof
 - category, invariant, architecture, and AI-agent safety docs
 - explicit security limits and no-bypass integration docs
 - wrong-way/KNOT-way and Express integration guidance
+- certification readiness and claim/evidence matrix
 - rollback/checkpoint verifier tests
 - open reciprocal license and commercial-license path
 - trust/evidence matrix and security review status
@@ -45,7 +46,7 @@
 - comparative benchmark report
 - signed tags and release artifacts
 - SBOM generation
-- real PostgreSQL concurrency integration tests
+- crash-recovery tests around consumed tokens and failed side effects
 - release notes and versioned package tags
 
 ## Later

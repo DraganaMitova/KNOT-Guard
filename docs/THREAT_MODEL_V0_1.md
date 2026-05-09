@@ -24,7 +24,7 @@ KNOT Guard v0.1 protects against these invalid transitions in a correctly integr
 - one-use execution tokens
 - `ReplayStore` abstraction
 - default in-memory replay protection
-- PostgreSQL replay/audit adapter shape
+- PostgreSQL replay/audit adapter with real concurrency integration proof
 - tamper-evident SHA-256 audit chain
 - audit-chain verification function and CLI
 - adversarial runtime tests

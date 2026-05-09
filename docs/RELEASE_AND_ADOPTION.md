@@ -13,7 +13,7 @@ This repository currently provides evidence for:
 - concurrent in-process replay-race rejection
 - tamper-evident audit chaining
 - audit-chain verifier CLI
-- PostgreSQL audit/replay adapter shape
+- PostgreSQL audit/replay adapter with real concurrency integration proof
 - wrong-way/KNOT-way and Express integration guidance
 - local benchmarkability
 - unsupported-claim detection in CI

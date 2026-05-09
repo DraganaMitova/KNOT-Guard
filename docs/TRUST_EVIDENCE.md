@@ -20,13 +20,13 @@ This document separates implemented evidence from claims that still need indepen
 | Authority decisions are explicit | `requestAuthority` API and decision states | Implemented |
 | Tokens are scope-bound | actor/action/target/scope/policy-version matching tests | Self-tested |
 | Tokens are one-use in process | replay store and concurrent replay test | Self-tested |
-| Distributed replay can be protected | `ReplayStore` interface and PostgreSQL `on conflict` adapter shape | Architecture |
+| Distributed replay can be protected | `ReplayStore` interface and real PostgreSQL concurrency integration test | Self-tested |
 | Audit records are tamper-evident | SHA-256 hash chain and verifier tests | Self-tested |
 | Rollback can be detected | verifier supports expected head hash and record count | Self-tested |
 | Rollback is prevented | requires external checkpoint authority | Not yet proven |
 | Privileged DB tampering is prevented | requires immutable storage or external checkpoints | Not yet proven |
 | Policy drift is blocked | policy-version binding test | Self-tested |
-| Bypass can be reduced by architecture | `ProtectedActionRegistry` pattern exists | Architecture |
+| Bypass can be reduced by architecture | `ProtectedActionRegistry` pattern and Express route proof | Self-tested |
 | Bypass is impossible | impossible if raw operations are exposed elsewhere | Not yet proven |
 | Install hooks are absent | package safety script and CI check | Self-tested |
 | Weak random fallback is avoided | default id generation requires `crypto.randomUUID()` | Implemented |
@@ -42,7 +42,6 @@ KNOT Guard is an opinionated authority-governed execution runtime with a growing
 
 - independent security audit
 - public adversarial review
-- real PostgreSQL integration tests under concurrency
 - external checkpoint signing example
 - production case study
 - tagged release with checksums and SBOM

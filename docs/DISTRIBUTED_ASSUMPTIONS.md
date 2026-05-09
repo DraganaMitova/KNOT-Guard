@@ -36,4 +36,4 @@ To preserve equivalent behavior across multiple processes, a deployment must pro
 
 ## Current Status
 
-The current branch documents these requirements, includes a local concurrent replay test, and includes a PostgreSQL adapter shape for shared atomic replay protection. Cross-process replay-race correctness is a deployment property: it depends on deploying that adapter, or an equivalent adapter, with a real shared database and validating it under concurrent load.
+The current branch documents these requirements, includes a local concurrent replay test, and includes a PostgreSQL adapter with a real concurrency integration proof for shared atomic replay protection. Cross-process replay-race correctness remains a deployment property: it depends on deploying that adapter, or an equivalent adapter, with a real shared database and validating it under the target deployment conditions.

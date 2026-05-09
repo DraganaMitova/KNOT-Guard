@@ -57,7 +57,7 @@ interface ReplayStore {
 }
 ```
 
-The current SDK includes a `PostgresGuardStore` adapter shape that implements both interfaces. It uses `insert ... on conflict (token_id) do nothing` for atomic token consumption and an advisory transaction lock for ordered audit-chain appends.
+The current SDK includes `PostgresGuardStore`, a PostgreSQL adapter that implements both interfaces. It uses `insert ... on conflict (token_id) do nothing` for atomic token consumption and an advisory transaction lock for ordered audit-chain appends. This branch includes a real PostgreSQL concurrency integration proof for the replay path.
 
 Use its schema helper as a starting point:
 

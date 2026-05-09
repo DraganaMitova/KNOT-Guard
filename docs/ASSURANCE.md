@@ -22,10 +22,10 @@ KNOT Guard's current job is narrower than "make software secure." It creates a r
 | Authority is explicit | `requestAuthority` API and allow/deny/hold decisions | Host application must call the runtime for protected actions. |
 | Scope is bound to execution | token scope and policy-version checks | Host application must provide truthful actor and target data. |
 | Tokens are single-use locally | in-memory replay store and concurrent replay test | One process only unless a shared atomic store is configured. |
-| Distributed replay can be made atomic | `ReplayStore` contract and PostgreSQL adapter shape | Depends on the deployed database transaction semantics. |
+| Distributed replay can be made atomic | `ReplayStore` contract and real PostgreSQL concurrency integration test | Depends on the deployed database transaction semantics. |
 | Audit records are tamper-evident | canonical SHA-256 hash chain and verifier | Does not stop privileged deletion or rollback by itself. |
 | Rollback can be detected against a checkpoint | verifier supports expected head hash and record count | Requires external checkpoint authority. |
-| Bypass can be reduced by architecture | `ProtectedActionRegistry` pattern | Raw dangerous operations must not be exported elsewhere. |
+| Bypass can be reduced by architecture | `ProtectedActionRegistry` pattern and Express route proof | Raw dangerous operations must not be exported elsewhere. |
 | Package surface is inspectable | package safety check rejects install/publish hooks | Does not replace independent supply-chain review. |
 
 ## What This Repository Does Not Claim Yet
@@ -71,7 +71,6 @@ These phrases may appear only when explicitly saying KNOT Guard does not claim t
 
 The next proof work is concrete:
 
-- real PostgreSQL integration tests with concurrent workers
 - crash-recovery tests around consumed tokens and failed side effects
 - signed audit-checkpoint example
 - signed release artifacts and SBOM

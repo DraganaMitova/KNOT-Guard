@@ -65,7 +65,7 @@ KNOT Guard currently provides:
 
 - in-process replay-race rejection
 - `ReplayStore` abstraction
-- PostgreSQL adapter shape using `insert ... on conflict`
+- PostgreSQL adapter using `insert ... on conflict`
 
 It does not yet provide:
 
@@ -86,7 +86,7 @@ all competing executions lose
 only the winner may continue to audit and execute
 ```
 
-The PostgreSQL adapter shape uses `insert ... on conflict (token_id) do nothing` for this reason. The storage layer becomes the authority for replay uniqueness.
+The PostgreSQL adapter uses `insert ... on conflict (token_id) do nothing` for this reason. The storage layer becomes the authority for replay uniqueness.
 
 ## Operator Limits
 
