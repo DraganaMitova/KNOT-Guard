@@ -76,6 +76,20 @@ const knot = new KnotGuard({
 });
 ```
 
+## Real Integration Proof
+
+The package includes a PostgreSQL integration test that starts a temporary embedded PostgreSQL server by default. If you need to run the same proof against an external test database, provide `KNOT_POSTGRES_TEST_URL`.
+
+Run it against a real test database with:
+
+```bash
+KNOT_POSTGRES_TEST_URL=postgres://user:password@127.0.0.1:5432/knot_guard_test npm --workspace @knot/guard test
+```
+
+The test creates isolated audit and token tables, runs concurrent executions against one token, asserts that exactly one execution wins, checks replay rejection for the rest, and verifies the resulting audit chain.
+
+Do not treat this as a production-certified database adapter claim. It is an integration proof for PostgreSQL behavior under the tested concurrency path.
+
 Future production adapters should also target:
 
 - SQLite for embedded systems

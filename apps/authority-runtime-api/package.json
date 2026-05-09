@@ -4,9 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node src/server.mjs"
+    "start": "node src/server.mjs",
+    "test": "node --test test/*.test.mjs"
   },
   "dependencies": {
-    "@knot/guard": "0.1.0"
+    "@knot/guard": "0.1.0",
+    "express": "^5.2.1"
   }
 }

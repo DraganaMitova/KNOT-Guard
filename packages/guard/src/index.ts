@@ -26,6 +26,11 @@ export type {
   TokenConsumption,
   TransitionReceipt,
 } from "./types.js";
-export type { PostgresGuardStoreConfig, PostgresQueryClient } from "./postgres.js";
+export type {
+  PostgresGuardStoreConfig,
+  PostgresPoolClient,
+  PostgresPooledClient,
+  PostgresQueryClient,
+} from "./postgres.js";
 export type { ProtectedAction, ProtectedOperation } from "./registry.js";
 export type { AuditVerificationFailure, AuditVerificationOptions, AuditVerificationResult } from "./verify.js";
