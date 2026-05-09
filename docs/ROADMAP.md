@@ -17,6 +17,9 @@
 - policy version binding
 - PostgreSQL audit and replay adapter shape
 - audit-chain verifier CLI
+- transition receipts
+- authority runtime backend proof
+- category, invariant, architecture, and AI-agent safety docs
 - CI, audit, CodeQL, and dependency-review workflows
 - security policy and PR security checklist
 - supply-chain and operational-security docs

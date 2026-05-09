@@ -9,6 +9,9 @@ Security-readiness branch:
 - Added runtime tests for allow, deny, hold, replay, tampering, and audit-chain behavior.
 - Added adversarial tests for expiry, missing reasons, audit failure, policy drift, verifier tampering, and PostgreSQL token replay semantics.
 - Added `ReplayStore`, policy-version token binding, PostgreSQL audit/replay adapter shape, and audit-chain verifier CLI.
+- Added transition receipts via `executeWithReceipt`.
+- Added category, invariant, architecture, and AI agent tool-safety docs.
+- Added runnable authority runtime backend proof.
 - Added local benchmark harness for governed authority/execution flow.
 - Added threat model, cryptographic design, persistence architecture, distributed guarantees, benchmark, and roadmap docs.
 - Added CI, security scanning, dependency review, repository security policy, and operational-security docs.

@@ -7,11 +7,13 @@ import type {
   AuthorityDecision,
   AuthorityRequest,
   DenialReason,
+  ExecutionResult,
   ExecutionToken,
   GuardConfig,
   Policy,
   ReplayStore,
   StoredAuditRecord,
+  TransitionReceipt,
 } from "./types.js";
 import { KnotGuardError } from "./types.js";
 
@@ -75,12 +77,12 @@ export class KnotGuard {
     if (policy.action.requiresReview || policy.action.risk === "critical") {
       const decision: AuthorityDecision = {
         id: decisionId,
-      state: "hold",
-      request,
-      scope,
-      policyVersion: this.policyVersion,
-      reviewReason: policy.action.requiresReview ? "manual_review_required" : "critical_risk",
-      createdAt,
+        state: "hold",
+        request,
+        scope,
+        policyVersion: this.policyVersion,
+        reviewReason: policy.action.requiresReview ? "manual_review_required" : "critical_risk",
+        createdAt,
       };
 
       await this.auditDecision(decision, "authority_held");
@@ -106,6 +108,14 @@ export class KnotGuard {
     decision: AuthorityDecision,
     operation: () => Promise<T> | T,
   ): Promise<T> {
+    const execution = await this.executeWithReceipt(decision, operation);
+    return execution.result;
+  }
+
+  async executeWithReceipt<T>(
+    decision: AuthorityDecision,
+    operation: () => Promise<T> | T,
+  ): Promise<ExecutionResult<T>> {
     if (decision.state !== "allow" || !decision.token) {
       await this.rejectExecution(decision, "audit_required");
       throw new KnotGuardError("Execution requires an allow decision with a token.", "audit_required");
@@ -130,7 +140,7 @@ export class KnotGuard {
       throw new KnotGuardError("Execution token has already been consumed.", consumption.reason ?? "token_consumed");
     }
 
-    await this.audit({
+    const tokenConsumedAudit = await this.audit({
       id: this.idFactory(),
       type: "token_consumed",
       actorId: token.actorId,
@@ -142,8 +152,9 @@ export class KnotGuard {
     });
 
     const result = await operation();
+    const executedAt = this.nowIso();
 
-    await this.audit({
+    const executionAudit = await this.audit({
       id: this.idFactory(),
       type: "execution_completed",
       actorId: token.actorId,
@@ -151,10 +162,13 @@ export class KnotGuard {
       target: token.target,
       decisionId: decision.id,
       tokenId: token.id,
-      createdAt: this.nowIso(),
+      createdAt: executedAt,
     });
 
-    return result;
+    return {
+      result,
+      receipt: createReceipt(decision, token, consumption.consumedAt, executedAt, tokenConsumedAudit, executionAudit),
+    };
   }
 
   async auditRecords(): Promise<StoredAuditRecord[]> {
@@ -235,14 +249,38 @@ export class KnotGuard {
     });
   }
 
-  private async audit(record: AuditRecord): Promise<void> {
+  private async audit(record: AuditRecord): Promise<StoredAuditRecord> {
     const stored = await this.auditStore.append(record);
     await this.auditSink?.(stored);
+    return stored;
   }
 
   private nowIso(): string {
     return this.now().toISOString();
   }
+}
+
+function createReceipt(
+  decision: AuthorityDecision,
+  token: ExecutionToken,
+  consumedAt: string,
+  executedAt: string,
+  tokenConsumedAudit: StoredAuditRecord,
+  executionAudit: StoredAuditRecord,
+): TransitionReceipt {
+  return {
+    decisionId: decision.id,
+    tokenId: token.id,
+    actorId: token.actorId,
+    action: token.action,
+    target: token.target,
+    scope: token.scope,
+    policyVersion: token.policyVersion,
+    consumedAt,
+    executedAt,
+    tokenConsumedAuditHash: tokenConsumedAudit.hash,
+    executionAuditHash: executionAudit.hash,
+  };
 }
 
 function hasRequiredRole(actorRoles: string[], requiredRoles: string[] | undefined): boolean {

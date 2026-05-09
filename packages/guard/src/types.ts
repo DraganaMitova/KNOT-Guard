@@ -71,6 +71,25 @@ export interface TokenConsumption {
   reason?: DenialReason;
 }
 
+export interface TransitionReceipt {
+  decisionId: string;
+  tokenId: string;
+  actorId: string;
+  action: string;
+  target: string;
+  scope: Scope;
+  policyVersion?: string;
+  consumedAt: string;
+  executedAt: string;
+  tokenConsumedAuditHash: string;
+  executionAuditHash: string;
+}
+
+export interface ExecutionResult<T> {
+  result: T;
+  receipt: TransitionReceipt;
+}
+
 export interface ReplayStore {
   consume(token: ExecutionToken, consumedAt: string): Promise<TokenConsumption>;
   getConsumption(tokenId: string): Promise<TokenConsumption | undefined>;

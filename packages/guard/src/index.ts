@@ -15,6 +15,7 @@ export type {
   AuthorityRequest,
   DecisionState,
   DenialReason,
+  ExecutionResult,
   ExecutionToken,
   GuardConfig,
   Policy,
@@ -22,6 +23,7 @@ export type {
   Scope,
   StoredAuditRecord,
   TokenConsumption,
+  TransitionReceipt,
 } from "./types.js";
 export type { PostgresGuardStoreConfig, PostgresQueryClient } from "./postgres.js";
 export type { AuditVerificationFailure, AuditVerificationResult } from "./verify.js";

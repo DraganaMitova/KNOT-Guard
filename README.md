@@ -1,20 +1,48 @@
 # KNOT Guard
 
-KNOT Guard is an authority-governed runtime for sensitive software actions.
+KNOT Guard is an **authority-governed execution runtime** for sensitive software actions.
 
-It prevents unauthorized state transitions by separating request, authority, scope, execution, and audit. The goal is simple: dangerous actions should never happen just because code reached an `if user.role === "admin"` branch.
+It acts like a state-transition firewall: a protected action may execute only when authority, scope, token consumption, and audit all agree.
+
+```text
+request observed
+-> authority requested
+-> scope bound
+-> risk reviewed
+-> one-use execution token minted
+-> token consumed
+-> action executed
+-> audit appended
+-> transition receipt returned
+```
+
+## The Core Invariant
+
+```text
+request is not authority
+authority is not execution
+execution is not proof
+logs are not audit
+```
+
+KNOT Guard prevents backend code from confusing those states.
+
+## Quick Example
 
 ```ts
 const decision = await knot.requestAuthority({
   actor: currentUser,
   action: "delete_user",
   target: userId,
-  reason: "GDPR removal request"
+  reason: "GDPR removal request",
 });
 
-await knot.execute(decision, async () => {
+const execution = await knot.executeWithReceipt(decision, async () => {
   await users.delete(userId);
+  return { deleted: true };
 });
+
+console.log(execution.receipt.executionAuditHash);
 ```
 
 KNOT Guard makes sensitive backend actions:
@@ -24,19 +52,31 @@ KNOT Guard makes sensitive backend actions:
 - non-replayable
 - time-limited
 - auditable
+- receipt-producing
 - deny/hold/allow aware
+
+## What KNOT Guard Is Not
+
+KNOT Guard is not a vulnerability scanner, Linux hardening script, dependency auditor, IAM replacement, CI wrapper, policy linter, or generic sandbox.
+
+Those tools inspect systems, dependencies, hosts, or pipelines.
+
+KNOT Guard governs whether a sensitive action is allowed to become reality.
 
 ## Workspace
 
 ```text
 packages/guard
-  TypeScript SDK prototype for authority-governed execution.
+  TypeScript SDK for authority-governed execution.
 
 apps/bank-admin-demo
-  Small browser demo showing protected banking admin actions and failed attacks.
+  Browser demo showing protected banking admin actions and blocked attacks.
+
+apps/authority-runtime-api
+  Runnable backend proof with protected refund endpoint, receipts, and audit export.
 ```
 
-## MVP Guarantees
+## Runtime Guarantees
 
 KNOT Guard refuses common unsafe transitions:
 
@@ -45,18 +85,11 @@ KNOT Guard refuses common unsafe transitions:
 - Expired token -> no execution
 - Reused token -> no execution
 - Missing audit -> no execution
-- Risk too high -> hold/review
+- Risk too high -> deny or hold
+- Policy drift -> no execution
+- Tampered audit chain -> verifier failure
 
-## Try The Demo
-
-```bash
-npm install
-npm run demo
-```
-
-Then open the local URL printed by Vite.
-
-## Build The SDK
+## Try It
 
 ```bash
 npm install
@@ -65,21 +98,38 @@ npm test
 npm run benchmark
 ```
 
-## Security Readiness
+Run the browser demo:
 
-This branch turns the prototype into a more concrete security architecture preview:
+```bash
+npm run demo
+```
+
+Run the backend proof:
+
+```bash
+npm run api
+```
+
+## Security Proof Surface
+
+This branch includes:
 
 - SHA-256 tamper-evident audit hash chain
-- runtime tests for replay, scope mismatch, denial, review hold, audit chaining, audit failure, policy drift, and replay races
+- transition receipts from `executeWithReceipt`
 - PostgreSQL audit/replay adapter shape
 - audit-chain verifier CLI
-- local benchmark harness for authority and execution flow
-- explicit threat model and non-goals
+- adversarial tests for replay, scope mismatch, denial, review hold, audit failure, policy drift, tampering, and replay races
+- benchmark harness for authority and execution flow
+- explicit versioned threat model and non-goals
 - documented persistence and distributed-system requirements
 - CI, security scanning, dependency review, and operational-security posture docs
 
 Read:
 
+- [Category](docs/CATEGORY.md)
+- [Runtime invariants](docs/INVARIANTS.md)
+- [Architecture](docs/ARCHITECTURE.md)
+- [AI agent tool safety](docs/AI_AGENT_TOOL_SAFETY.md)
 - [Security model](docs/SECURITY_MODEL.md)
 - [Threat model v0.1](docs/THREAT_MODEL_V0_1.md)
 - [Cryptographic design](docs/CRYPTOGRAPHIC_DESIGN.md)

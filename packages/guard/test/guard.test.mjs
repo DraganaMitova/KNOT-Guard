@@ -47,6 +47,22 @@ test("allows a scoped action and consumes the execution token once", async () =>
   );
 });
 
+test("returns a transition receipt for successful execution", async () => {
+  const knot = createGuard({ policyVersion: "policy-v1" });
+  const decision = await knot.requestAuthority(request());
+  const execution = await knot.executeWithReceipt(decision, () => ({ ok: true }));
+
+  assert.deepEqual(execution.result, { ok: true });
+  assert.equal(execution.receipt.decisionId, decision.id);
+  assert.equal(execution.receipt.tokenId, decision.token.id);
+  assert.equal(execution.receipt.actorId, "ava");
+  assert.equal(execution.receipt.action, "refund_payment");
+  assert.equal(execution.receipt.target, "pay_001");
+  assert.equal(execution.receipt.policyVersion, "policy-v1");
+  assert.match(execution.receipt.tokenConsumedAuditHash, /^[a-f0-9]{64}$/);
+  assert.match(execution.receipt.executionAuditHash, /^[a-f0-9]{64}$/);
+});
+
 test("denies wrong actor role before token minting", async () => {
   const knot = createGuard();
   const decision = await knot.requestAuthority(

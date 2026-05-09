@@ -13,7 +13,8 @@
     "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "benchmark": "npm --workspace @knot/guard run benchmark",
-    "demo": "npm --workspace @knot/bank-admin-demo run dev"
+    "demo": "npm --workspace @knot/bank-admin-demo run dev",
+    "api": "npm --workspace @knot/authority-runtime-api start"
   },
   "devDependencies": {
     "typescript": "^5.9.3"
