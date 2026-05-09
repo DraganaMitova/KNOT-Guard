@@ -69,3 +69,7 @@ npm test
 KNOT Guard is not "unhackable software."
 
 It is a runtime that makes dangerous backend actions pass through proof, authority, scope, execution, and audit before state changes are allowed.
+
+## License
+
+KNOT Guard is proprietary software. No permission is granted to use, copy, modify, distribute, host, deploy, or create derivative works without a separate written commercial license from Dragana Mitova. See [LICENSE](LICENSE).
