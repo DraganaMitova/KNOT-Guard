@@ -297,5 +297,9 @@ function tokenStillMatchesDecision(token: ExecutionToken, decision: AuthorityDec
 }
 
 function randomId(): string {
-  return globalThis.crypto?.randomUUID?.() ?? `kg_${Math.random().toString(36).slice(2)}`;
+  if (!globalThis.crypto?.randomUUID) {
+    throw new Error("KNOT Guard requires crypto.randomUUID() for default id generation.");
+  }
+
+  return globalThis.crypto.randomUUID();
 }

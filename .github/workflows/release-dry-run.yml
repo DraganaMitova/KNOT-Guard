@@ -1,23 +1,17 @@
-name: CI
+name: Release Dry Run
 
 on:
   pull_request:
   push:
     branches:
-      - main
-      - security-readiness-hardening
       - stable-prod
 
 permissions:
   contents: read
 
-concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  build-test-benchmark:
-    name: Build, test, benchmark
+  package:
+    name: Package dry run
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -36,14 +30,11 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      - name: Build package
+        run: npm --workspace @knot/guard run build
 
-      - name: Test
-        run: npm test
-
-      - name: Package safety
+      - name: Check lifecycle hooks
         run: npm run security:package
 
-      - name: Benchmark smoke
-        run: KNOT_BENCHMARK_ITERATIONS=1000 npm run benchmark
+      - name: Pack dry run
+        run: npm --workspace @knot/guard pack --dry-run

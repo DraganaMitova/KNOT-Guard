@@ -10,6 +10,8 @@ KNOT Guard's current supply-chain strategy is conservative: keep the dependency 
 - The workspace root remains private to prevent accidental workspace publication.
 - Dependency Review blocks high-severity dependency changes and disallowed copyleft licenses.
 - `npm audit --audit-level=high` runs in CI.
+- package safety checks reject install, prepare, and publish lifecycle hooks.
+- release dry-run checks `npm pack --dry-run` for the SDK package.
 
 ## Dependency Policy
 

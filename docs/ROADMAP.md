@@ -24,6 +24,8 @@
 - rollback/checkpoint verifier tests
 - open reciprocal license and commercial-license path
 - trust/evidence matrix and security review status
+- package safety checks and release dry-run workflow
+- security inspection guide
 - CI, audit, CodeQL, and dependency-review workflows
 - security policy and PR security checklist
 - supply-chain and operational-security docs
@@ -40,6 +42,9 @@
 - release artifact checksums
 - independent security review
 - comparative benchmark report
+- signed tags and release artifacts
+- SBOM generation
+- real PostgreSQL concurrency integration tests
 - release notes and versioned package tags
 
 ## Later

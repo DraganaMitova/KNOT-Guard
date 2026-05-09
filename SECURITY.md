@@ -4,7 +4,7 @@ KNOT Guard is pre-release security infrastructure licensed for open reciprocal r
 
 ## Reporting A Vulnerability
 
-Report security issues privately to the repository owner.
+Report security issues privately to the repository owner. If GitHub private vulnerability reporting is enabled for the repository, use that path first. Otherwise contact Dragana Mitova directly before publishing details.
 
 Include:
 
@@ -24,3 +24,14 @@ Include:
 ## Current Security Posture
 
 This project currently provides local SDK guarantees and documented production requirements. It has not yet completed independent audit, formal verification, or production adapter review.
+
+## Advisory Process
+
+For confirmed vulnerabilities:
+
+- create a private advisory record
+- identify affected branches and releases
+- add a regression test when practical
+- patch on the supported branch
+- publish advisory notes after a fix or mitigation is available
+- credit external reporters unless they request otherwise

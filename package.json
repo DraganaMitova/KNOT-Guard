@@ -12,6 +12,7 @@
   "scripts": {
     "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
+    "security:package": "node scripts/check-package-safety.mjs",
     "benchmark": "npm --workspace @knot/guard run benchmark",
     "demo": "npm --workspace @knot/bank-admin-demo run dev",
     "api": "npm --workspace @knot/authority-runtime-api start"

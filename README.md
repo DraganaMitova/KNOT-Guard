@@ -141,6 +141,7 @@ Read:
 - [Security limits](docs/SECURITY_LIMITS.md)
 - [Trust and evidence](docs/TRUST_EVIDENCE.md)
 - [Security review status](docs/SECURITY_REVIEW.md)
+- [Security inspection guide](docs/SECURITY_INSPECTION_GUIDE.md)
 - [Adversarial testing](docs/ADVERSARIAL_TESTING.md)
 - [No-bypass integration](docs/NO_BYPASS_INTEGRATION.md)
 - [Threat model v0.1](docs/THREAT_MODEL_V0_1.md)
@@ -151,6 +152,7 @@ Read:
 - [Supply-chain posture](docs/SUPPLY_CHAIN.md)
 - [Benchmarks](docs/BENCHMARKS.md)
 - [Release and adoption status](docs/RELEASE_AND_ADOPTION.md)
+- [Release process](docs/RELEASE_PROCESS.md)
 - [Roadmap](docs/ROADMAP.md)
 - [Changelog](CHANGELOG.md)
 

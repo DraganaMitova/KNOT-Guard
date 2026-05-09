@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - security-readiness-hardening
+      - stable-prod
   schedule:
     - cron: "17 4 * * 1"
 
@@ -40,6 +41,9 @@ jobs:
 
       - name: Audit production dependency tree
         run: npm audit --audit-level=high
+
+      - name: Check package lifecycle hooks
+        run: npm run security:package
 
   codeql:
     name: CodeQL

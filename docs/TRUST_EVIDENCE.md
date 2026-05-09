@@ -28,6 +28,10 @@ This document separates implemented evidence from claims that still need indepen
 | Policy drift is blocked | policy-version binding test | Self-tested |
 | Bypass is prevented by default | `ProtectedActionRegistry` pattern exists | Architecture |
 | Bypass is impossible | impossible if raw operations are exposed elsewhere | Not yet proven |
+| Install hooks are absent | package safety script and CI check | Self-tested |
+| Weak random fallback is avoided | default id generation requires `crypto.randomUUID()` | Implemented |
+| Signed releases are available | not implemented | Not yet proven |
+| Reproducible builds are available | package dry run exists, reproducible build proof not implemented | Not yet proven |
 | Enterprise readiness | no independent audit or large deployments yet | Not yet proven |
 
 ## Current Trust Statement

@@ -16,6 +16,8 @@ Security-readiness branch:
 - Added rollback/checkpoint and protected-action-registry tests.
 - Switched to AGPL-3.0-only public license with separate commercial-license path.
 - Added trust/evidence matrix and security review status docs.
+- Added package safety checks, release dry-run workflow, and security inspection guide.
+- Removed weak random ID fallback; default ID generation now requires `crypto.randomUUID()`.
 - Added local benchmark harness for governed authority/execution flow.
 - Added threat model, cryptographic design, persistence architecture, distributed guarantees, benchmark, and roadmap docs.
 - Added CI, security scanning, dependency review, repository security policy, and operational-security docs.
