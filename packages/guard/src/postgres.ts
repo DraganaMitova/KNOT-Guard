@@ -12,6 +12,14 @@ export interface PostgresQueryClient {
   query<T = unknown>(sql: string, values?: unknown[]): Promise<{ rows: T[]; rowCount?: number | null }>;
 }
 
+interface PostgresPooledClient extends PostgresQueryClient {
+  release(): void;
+}
+
+interface PostgresPoolClient extends PostgresQueryClient {
+  connect(): Promise<PostgresPooledClient>;
+}
+
 export interface PostgresGuardStoreConfig {
   client: PostgresQueryClient;
   auditTable?: string;
@@ -28,7 +36,7 @@ type AuditRow = {
   decision_id: string | null;
   token_id: string | null;
   reason: string | null;
-  created_at: string;
+  created_at: string | Date;
   data: Record<string, unknown> | null;
   previous_hash: string | null;
   hash: string;
@@ -36,7 +44,7 @@ type AuditRow = {
 
 type TokenRow = {
   token_id: string;
-  consumed_at: string;
+  consumed_at: string | Date;
   result: TokenConsumption["result"];
   reason: TokenConsumption["reason"] | null;
 };
@@ -53,25 +61,23 @@ export class PostgresGuardStore implements AuditStore, ReplayStore {
   }
 
   async append(record: AuditRecord): Promise<StoredAuditRecord> {
-    await this.client.query("begin");
+    return this.withTransaction(async (client) => {
+      await client.query("select pg_advisory_xact_lock(hashtext($1))", [this.auditTable]);
 
-    try {
-      await this.client.query("select pg_advisory_xact_lock(hashtext($1))", [this.auditTable]);
-
-      const previous = await this.client.query<{ sequence: number; hash: string }>(
+      const previous = await client.query<{ sequence: number; hash: string }>(
         `select sequence, hash from ${this.auditTable} order by sequence desc limit 1`,
       );
       const previousRecord = previous.rows[0];
       const stored: StoredAuditRecord = {
         ...record,
-        sequence: (previousRecord?.sequence ?? 0) + 1,
+        sequence: Number(previousRecord?.sequence ?? 0) + 1,
         previousHash: previousRecord?.hash ?? null,
         hash: "",
       };
 
       stored.hash = await sha256Hex({ ...stored, hash: undefined });
 
-      const inserted = await this.client.query<AuditRow>(
+      const inserted = await client.query<AuditRow>(
         `insert into ${this.auditTable}
           (id, sequence, type, actor_id, action, target, decision_id, token_id, reason, created_at, data, previous_hash, hash)
          values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
@@ -93,12 +99,8 @@ export class PostgresGuardStore implements AuditStore, ReplayStore {
         ],
       );
 
-      await this.client.query("commit");
       return fromAuditRow(inserted.rows[0]);
-    } catch (error) {
-      await this.client.query("rollback");
-      throw error;
-    }
+    });
   }
 
   async consume(token: ExecutionToken, consumedAt: string): Promise<TokenConsumption> {
@@ -153,6 +155,37 @@ export class PostgresGuardStore implements AuditStore, ReplayStore {
     return result.rows[0] ? fromTokenRow(result.rows[0]) : undefined;
   }
 
+  private async withTransaction<T>(
+    operation: (client: PostgresQueryClient) => Promise<T>,
+  ): Promise<T> {
+    if (isPostgresPoolClient(this.client)) {
+      const pooledClient = await this.client.connect();
+
+      try {
+        await pooledClient.query("begin");
+        const result = await operation(pooledClient);
+        await pooledClient.query("commit");
+        return result;
+      } catch (error) {
+        await pooledClient.query("rollback");
+        throw error;
+      } finally {
+        pooledClient.release();
+      }
+    }
+
+    await this.client.query("begin");
+
+    try {
+      const result = await operation(this.client);
+      await this.client.query("commit");
+      return result;
+    } catch (error) {
+      await this.client.query("rollback");
+      throw error;
+    }
+  }
+
   static schema(config: Pick<PostgresGuardStoreConfig, "auditTable" | "tokenTable"> = {}): string {
     const auditTable = assertIdentifier(config.auditTable ?? "knot_guard_audit_records");
     const tokenTable = assertIdentifier(config.tokenTable ?? "knot_guard_token_consumptions");
@@ -198,7 +231,7 @@ function fromAuditRow(row: AuditRow): StoredAuditRecord {
     decisionId: row.decision_id ?? undefined,
     tokenId: row.token_id ?? undefined,
     reason: row.reason ?? undefined,
-    createdAt: row.created_at,
+    createdAt: fromPostgresTimestamp(row.created_at),
     data: row.data ?? undefined,
     previousHash: row.previous_hash,
     hash: row.hash,
@@ -208,7 +241,7 @@ function fromAuditRow(row: AuditRow): StoredAuditRecord {
 function fromTokenRow(row: TokenRow): TokenConsumption {
   return {
     tokenId: row.token_id,
-    consumedAt: row.consumed_at,
+    consumedAt: fromPostgresTimestamp(row.consumed_at),
     result: row.result,
     reason: row.reason ?? undefined,
   };
@@ -220,4 +253,12 @@ function assertIdentifier(identifier: string): string {
   }
 
   return identifier;
+}
+
+function isPostgresPoolClient(client: PostgresQueryClient): client is PostgresPoolClient {
+  return typeof (client as Partial<PostgresPoolClient>).connect === "function";
+}
+
+function fromPostgresTimestamp(value: string | Date): string {
+  return value instanceof Date ? value.toISOString() : value;
 }
