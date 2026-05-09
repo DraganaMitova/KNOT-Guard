@@ -22,6 +22,8 @@
 - category, invariant, architecture, and AI-agent safety docs
 - explicit security limits and no-bypass integration docs
 - rollback/checkpoint verifier tests
+- open reciprocal license and commercial-license path
+- trust/evidence matrix and security review status
 - CI, audit, CodeQL, and dependency-review workflows
 - security policy and PR security checklist
 - supply-chain and operational-security docs
@@ -36,6 +38,8 @@
 - pinned GitHub Action SHAs
 - SBOM generation
 - release artifact checksums
+- independent security review
+- comparative benchmark report
 - release notes and versioned package tags
 
 ## Later

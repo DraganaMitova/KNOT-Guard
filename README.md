@@ -78,7 +78,7 @@ apps/authority-runtime-api
 
 ## Runtime Guarantees
 
-KNOT Guard refuses common unsafe transitions:
+KNOT Guard is designed to refuse common unsafe transitions:
 
 - No authority -> no execution
 - Wrong scope -> no execution
@@ -124,6 +124,12 @@ This branch includes:
 - documented persistence and distributed-system requirements
 - CI, security scanning, dependency review, and operational-security posture docs
 
+## Trust Status
+
+KNOT Guard is pre-release security infrastructure. The current branch contains code, tests, docs, and demos, but it has not completed independent audit, formal verification, security certification, or large-scale production validation.
+
+Read [Trust and evidence](docs/TRUST_EVIDENCE.md) before treating any security claim as production-grade.
+
 Read:
 
 - [Category](docs/CATEGORY.md)
@@ -133,6 +139,8 @@ Read:
 - [AI agent tool safety](docs/AI_AGENT_TOOL_SAFETY.md)
 - [Security model](docs/SECURITY_MODEL.md)
 - [Security limits](docs/SECURITY_LIMITS.md)
+- [Trust and evidence](docs/TRUST_EVIDENCE.md)
+- [Security review status](docs/SECURITY_REVIEW.md)
 - [Adversarial testing](docs/ADVERSARIAL_TESTING.md)
 - [No-bypass integration](docs/NO_BYPASS_INTEGRATION.md)
 - [Threat model v0.1](docs/THREAT_MODEL_V0_1.md)
@@ -154,4 +162,4 @@ It is a runtime that makes dangerous backend actions pass through proof, authori
 
 ## License
 
-KNOT Guard is proprietary software. No permission is granted to use, copy, modify, distribute, host, deploy, or create derivative works without a separate written commercial license from Dragana Mitova. See [LICENSE](LICENSE).
+KNOT Guard is licensed under the GNU Affero General Public License v3.0 only (`AGPL-3.0-only`) for open, reciprocal use and public security review. Commercial licensing may be available separately for closed/proprietary deployments. See [LICENSE](LICENSE) and [COMMERCIAL_LICENSE.md](COMMERCIAL_LICENSE.md).

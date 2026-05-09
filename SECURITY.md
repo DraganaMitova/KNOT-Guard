@@ -1,6 +1,6 @@
 # Security Policy
 
-KNOT Guard is pre-release proprietary software. Please do not publish suspected vulnerabilities publicly before Dragana Mitova has had a reasonable chance to review them.
+KNOT Guard is pre-release security infrastructure licensed for open reciprocal review under AGPL-3.0-only. Please do not publish suspected vulnerabilities publicly before Dragana Mitova has had a reasonable chance to review them.
 
 ## Reporting A Vulnerability
 

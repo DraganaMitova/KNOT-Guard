@@ -121,3 +121,5 @@ It is not yet:
 - enterprise-certified
 - battle-tested at large scale
 - a replacement for IAM, database security, or operational controls
+
+See [Trust and evidence](TRUST_EVIDENCE.md) for the current claim-by-claim evidence level.

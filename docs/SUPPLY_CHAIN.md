@@ -6,8 +6,8 @@ KNOT Guard's current supply-chain strategy is conservative: keep the dependency 
 
 - `package-lock.json` is committed.
 - CI uses `npm ci`.
-- The package is marked `private` and `UNLICENSED`.
-- The SDK package is marked `private`.
+- The public package metadata is marked `AGPL-3.0-only`.
+- The workspace root remains private to prevent accidental workspace publication.
 - Dependency Review blocks high-severity dependency changes and disallowed copyleft licenses.
 - `npm audit --audit-level=high` runs in CI.
 

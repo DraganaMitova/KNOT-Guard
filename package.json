@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "description": "KNOT Guard: authority-governed execution for sensitive software actions.",
-  "license": "UNLICENSED",
+  "license": "AGPL-3.0-only",
   "type": "module",
   "workspaces": [
     "packages/*",
